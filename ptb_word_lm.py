@@ -289,6 +289,7 @@ class Predictor:
       feed_dict = {}
       feed_dict[model.input_data] = x
       feed_dict[model.targets] = y
+      #c是上一个神经元的memory cell,h是history status
       for i, (c, h) in enumerate(model.initial_state):
         feed_dict[c] = state[i].c
         feed_dict[h] = state[i].h
@@ -296,7 +297,6 @@ class Predictor:
       cost, state, _ = session.run(fetches, feed_dict)
       costs += cost
       iters += model.num_steps
-
 
       if verbose and step % (epoch_size // 10) == 10:
         print("%.3f perplexity: %.3f speed: %.0f wps" %
@@ -312,7 +312,7 @@ class Predictor:
     with tf.variable_scope(self._category, reuse=None, initializer=self._initializer), tf.Session() as session:
       m = PTBModel(is_training=True, config=self._config, category=self._category)
 
-      tf.initialize_all_variables().run()
+      tf.global_variable_initializer().run()
 
       ckpt = tf.train.get_checkpoint_state(self._checkpoint_dir)
       if ckpt and ckpt.model_checkpoint_path:

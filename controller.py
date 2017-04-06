@@ -9,6 +9,7 @@ def start_train( p, category, data_file, vocab_file, retrain=False ):
 	train_data = None
 	word_to_id = None
 	vocabs = None
+	#如果存在词汇文件，则从文件创建词汇表，否则从训练文件中创建
 	if os.path.exists(vocab_file):
 		word_to_id, vocabs = dp.build_vocabulary(vocab_file)
 	else:
